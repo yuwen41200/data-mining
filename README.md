@@ -1,2 +1,3 @@
-# data-mining
+# Data Mining #
+
 Data Mining Practice
