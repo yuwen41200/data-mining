@@ -6,10 +6,53 @@
 </head>
 <body>
 
-<h3>分析原始資料的格式，建立資料庫，撰寫程式剖析原始資料並將資料匯入資料庫。<br>
-由於未來幾次作業應該都還會用到這些資料(?)，所以我將所有可能用得到的資料都匯入。<br>
+<h1>Homework 0: Data Preprocessing and Exploring the Dataset</h1>
+<h1>REPORT</h1>
+<h2>0316213 蒲郁文</h2>
+
+<h3>首先，分析原始資料的格式，建立資料庫，撰寫程式剖析原始資料並將資料匯入資料庫。<br>
+由於未來幾次作業應該都還會用到這些資料 (?)，所以我將所有可能用得到的資料都匯入。<br>
 需要特別說明的地方，我都有寫註解，請參閱我的程式碼。<br>
-附帶一提，原始資料中的氣象資料的每日統計的部份可能有誤，其最高溫與最低溫都相同。</h3>
+附帶一提，原始資料中的氣象資料的每日統計的部分可能有誤，其最高溫與最低溫都相同。</h3>
+
+<h3>資料表結構：</h3>
+
+<pre>
+CREATE TABLE `Power` (
+  `updateTime` datetime NOT NULL,
+  `northSupply` double DEFAULT NULL,
+  `northUsage` double DEFAULT NULL,
+  `centerSupply` double DEFAULT NULL,
+  `centerUsage` double DEFAULT NULL,
+  `southSupply` double DEFAULT NULL,
+  `southUsage` double DEFAULT NULL,
+  `eastSupply` double DEFAULT NULL,
+  `eastUsage` double DEFAULT NULL,
+  KEY `idx` (`updateTime`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `每日統計` (
+  `測站` varchar(255) NOT NULL,
+  `時間` date NOT NULL,
+  `當日最高溫度` double DEFAULT NULL,
+  `當日最低溫度` double DEFAULT NULL,
+  `當日平均溫度` double DEFAULT NULL,
+  KEY `idx` (`測站`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `逐時觀測` (
+  `測站` varchar(255) NOT NULL,
+  `時間` datetime NOT NULL,
+  `測站氣壓` double DEFAULT NULL,
+  `溫度` double DEFAULT NULL,
+  `相對濕度` double DEFAULT NULL,
+  `風速` double DEFAULT NULL,
+  `風向` varchar(255) DEFAULT NULL,
+  `降水量` double DEFAULT NULL,
+  `日照時數` double DEFAULT NULL,
+  KEY `idx` (`測站`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</pre>
 
 <h3>剖析、匯入氣象資料：<br>
 Remark: 24:00 is not allowed in MariaDB datetime, change it to 23:59.</h3>
@@ -825,7 +868,28 @@ if __name__ == '__main__':
     render_image('p3east', es, eu, et)
 </pre>
 
-<h3>繪圖結果，北部：</h3>
+<h3>繪圖結果，北部：<br>
+註：紅線表示供電量；藍線表示用電量；紫線表示溫度。<br>
+如果看不到圖片，請檢查圖片是否有和本 HTML 文件放在同一個目錄裡。</h3>
+<img src="p3north.png">
+
+<h3>中部：</h3>
+<img src="p3center.png">
+
+<h3>南部：</h3>
+<img src="p3south.png">
+
+<h3>東部：</h3>
+<img src="p3east.png">
+
+<h3>結果解讀：<br>
+一、北部及東部的供電量時常低於用電量。東部的用電量、供電量遠低於其他地區。<br>
+二、用電量與溫度有關。溫度高時用電量往往也較高。夏季的用電量高於冬季。<br>
+三、每月會出現 4～5 次用電量及供電量大幅減少的情況，推測假日是用電的離峰時段。</h3>
+
+<h3>第四部分的程式碼與程式輸出如下：<br>
+註：我使用亂數來隨機選擇兩筆計算距離的資料。<br>
+第 (d) 小題平滑化資料的部分我用的是 Savitzky–Golay Filter。</h3>
 
 <pre>
 #!/usr/bin/env python3
@@ -884,10 +948,8 @@ if __name__ == '__main__':
     cnx.close()
 </pre>
 
-
-
-
-
+<h3>執行結果：<br>
+從以下結果可發現，Offset Translation 不會改變彼此的距離，Amplitude Scaling 可大幅降低距離。</h3>
 
 <pre>
 Choose record #4230 as Q and record #6294 as C.
