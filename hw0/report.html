@@ -6,6 +6,13 @@
 </head>
 <body>
 
+<h3>分析原始資料的格式，建立資料庫，撰寫程式剖析原始資料並將資料匯入資料庫。<br>
+由於未來幾次作業應該都還會用到這些資料(?)，所以我將所有可能用得到的資料都匯入。<br>
+需要特別說明的地方，我都有寫註解，請參閱我的程式碼。<br>
+附帶一提，原始資料中的氣象資料的每日統計的部份可能有誤，其最高溫與最低溫都相同。</h3>
+
+<h3>剖析、匯入氣象資料：<br>
+Remark: 24:00 is not allowed in MariaDB datetime, change it to 23:59.</h3>
 
 <pre>
 #!/usr/bin/env python3
@@ -79,10 +86,8 @@ if __name__ == '__main__':
     cnx.close()
 </pre>
 
-
-
-
-
+<h3>剖析、匯入台電 JSON 資料：<br>
+Remark: Use the "updateTime" in "reserveData" because it is detailed and uses local timezone.</h3>
 
 <pre>
 #!/usr/bin/env python3
@@ -133,10 +138,8 @@ if __name__ == '__main__':
     cnx.close()
 </pre>
 
-
-
-
-
+<h3>剖析、匯入台電 CSV 資料：<br>
+Remark: Records on 2017/9/2 are inconsistent, remove those in JSON file.</h3>
 
 <pre>
 #!/usr/bin/env python3
@@ -176,10 +179,8 @@ if __name__ == '__main__':
     cnx.close()
 </pre>
 
-
-
-
-
+<h3>第二部分，查詢資料。<br>
+第 (a) 小題查詢語句：</h3>
 
 <pre>
 SELECT DATE(Power.updateTime), MAX(Power.northSupply), MAX(Power.northUsage),
@@ -190,10 +191,7 @@ WHERE DATE(Power.updateTime) BETWEEN '2016-10-01' AND '2017-06-30'
 GROUP BY DATE(Power.updateTime)
 </pre>
 
-
-
-
-
+<h3>第 (a) 小題答案：</h3>
 
 <pre>
 DATE(Power.updateTime)	MAX(Power.northSupply)	MAX(Power.northUsage)	MAX(Power.centerSupply)	MAX(Power.centerUsage)	MAX(Power.southSupply)	MAX(Power.southUsage)	MAX(Power.eastSupply)	MAX(Power.eastUsage)
@@ -389,20 +387,14 @@ DATE(Power.updateTime)	MAX(Power.northSupply)	MAX(Power.northUsage)	MAX(Power.ce
 2017-06-30	1193.1	1370.6	1011.1	919.9	1252.5	1118.4	9.6	48.8
 </pre>
 
-
-
-
-
+<h3>第 (b) 小題查詢語句：</h3>
 
 <pre>
 SELECT DISTINCT 逐時觀測.測站
 FROM 逐時觀測
 </pre>
 
-
-
-
-
+<h3>第 (b) 小題答案：</h3>
 
 <pre>
 測站
@@ -437,10 +429,8 @@ YUSHAN,玉山
 ZHUZIHU,竹子湖
 </pre>
 
-
-
-
-
+<h3>第 (c) 小題查詢語句：<br>
+Remark: Choose a location to represent an area.</h3>
 
 <pre>
 SELECT A.日期, `北部（板橋）最高溫度`, `中部（臺中）最高溫度`, `南部（高雄）最高溫度`, `東部（花蓮）最高溫度`
@@ -470,10 +460,7 @@ GROUP BY DATE(逐時觀測.時間)
 ) D ON A.日期 = D.日期
 </pre>
 
-
-
-
-
+<h3>第 (c) 小題答案：</h3>
 
 <pre>
 日期	北部（板橋）最高溫度	中部（臺中）最高溫度	南部（高雄）最高溫度	東部（花蓮）最高溫度
@@ -752,10 +739,7 @@ GROUP BY DATE(逐時觀測.時間)
 2017-06-30	34.3	34	33	31.7
 </pre>
 
-
-
-
-
+<h3>第 (d) 小題查詢語句：</h3>
 
 <pre>
 SELECT 'highest' AS Item, MAX(逐時觀測.溫度) AS Temperature
@@ -767,10 +751,7 @@ FROM 逐時觀測
 WHERE DATE(逐時觀測.時間) BETWEEN '2016-10-01' AND '2017-06-30'
 </pre>
 
-
-
-
-
+<h3>第 (d) 小題答案：</h3>
 
 <pre>
 Item	Temperature
@@ -778,10 +759,7 @@ highest	37.5
 lowest	-99.5
 </pre>
 
-
-
-
-
+<h3>接著，撰寫程式繪圖。</h3>
 
 <pre>
 #!/usr/bin/env python3
@@ -847,10 +825,7 @@ if __name__ == '__main__':
     render_image('p3east', es, eu, et)
 </pre>
 
-
-
-
-
+<h3>繪圖結果，北部：</h3>
 
 <pre>
 #!/usr/bin/env python3
