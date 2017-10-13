@@ -1,0 +1,6 @@
+Choose record #4230 as Q and record #6294 as C.
+Before transformation: D(Q,C) = 189.770387574
+After offset translation: D(Q,C) = 189.770387574
+After amplitude scaling: D(Q,C) = 2.80289550846
+After linear trend removal: D(Q,C) = 168.964930934
+After noise reduction: D(Q,C) = 187.015184912
