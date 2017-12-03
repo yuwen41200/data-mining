@@ -9,6 +9,7 @@ Data Mining Practice
   + ignore, impute or interpolate missing values (taipower dataset lacks data from Jan. to Apr.)
   + align records with n o'clock sharp (make sure there is one and only one record for each hour in both datasets)
 + Flatten JSON to DataFrame: `pandas.io.json.json_normalize()`
++ Write DataFrame to database: `pandas.DataFrame.to_sql()`
 + Calculate Euclidean distance: `numpy.linalg.norm(X - Y)`
 + Other useful functions: `scipy.signal.filtfilt()` for smoothing (noise reduction)
 + Useful programming skills: `f"Hello, my name is {name}."`
@@ -30,3 +31,5 @@ Data Mining Practice
 + Use elbow method or silhouette value to determine k.
 + For multidimensional data, normalizing data in advance may produce better results.
 + For high-dimensional data, use principal component analysis (PCA) to reduce dimensions.
++ The clustering result of taipower data in `temporal-clustering.ipynb` also shows a periodic pattern.
+  + The electricity consumption on weekends tends to belong to a different cluster.
